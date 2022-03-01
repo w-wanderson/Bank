@@ -5,8 +5,10 @@ public class People {
 
 	private static int counter = 1;
 
-	private String name;
-	private String cpf;
+	private  String name;
+	private  String cpf;
+	
+	public People() {}
 
 	public People(String name, String cpf) {
 		
@@ -33,9 +35,10 @@ public class People {
 
 	@Override
 	public String toString() {
-		return "name " 
+		return " Name: " 
 				+ name 
-				+ ", cpf=" 
+				+","
+				+ " CPF: "				
 				+ cpf;
 	}
 	
