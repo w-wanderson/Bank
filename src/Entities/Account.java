@@ -1,98 +1,91 @@
 package Entities;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+public abstract class Account {
 
-public class Account {
+	private static int counterCurrent = 1;
+	private static int counterBusiness = 1;
 
-	private static int accountant = 1;
-
-	private int numberAccount;
-	private People people;
+	private String name;
+	private String telefone;
+	private String cpf;
+	private String cnpj;
 	private Double balance = 0.0;
-	
-	 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
-	 Date current = new Date();
+	private double tax = 5.0;
+	 
 
-	public Account(People people) {
-		this.numberAccount = accountant;
-		this.people = people;
-		
-		accountant += 1;
+	public Account() {
 	}
 
-	public int getNumberAccount() {
-		return numberAccount;
+	public Account(String name, String telefone) {
+
+		this.name = name;
+		this.telefone = telefone;
+		counterCurrent += 1;
+		counterBusiness += 100;
 	}
 
-	public void setNumberAccount(int numberAccount) {
-		this.numberAccount = numberAccount;
+	public String getTelefone() {
+		return telefone;
 	}
 
-	public People getPeople() {
-		return people;
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
-	public void setPeople(People people) {
-		this.people = people;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public Double getBalance() {
 		return balance;
 	}
-	
+
 	public void setBalance(Double balance) {
 		this.balance = balance;
 	}
 
-	public void balance() {		
-		
-		getBalance();
+	public double getTax() {
+		return tax;
 	}
 
-	public void deposit(double value) {
-		if (value > 0) {
-			setBalance(getBalance() + value);
-			System.out.println("Deposit Made Successfully" + " | " + sdf.format(current));
-		} 
-		else {
-			System.out.println("Value not Allowed!");
-		}
-
-	}
-
-	public void toWithdrawa(double value) {
-		if (value > 0 && getBalance() >= value) {
-		//	value -= getBalance() + 5.0;
-			setBalance(getBalance() - value );
-			System.out.println("Withdrawal Successful" + " | " + sdf.format(current));
-		}
-		else{
-			System.out.println("Insufficient Funds");
-		}
+	public void setTax(double tax) {
+		this.tax = tax;
 	}
 	
-	public void transfer(Account accountForDeposit, Double value) {
-		if (value > 0 && getBalance() >= value) {
-			setBalance(getBalance() - value); 
-			accountForDeposit.balance = accountForDeposit.getBalance() + value;
-			System.out.println("Successful transfers" + " | " + sdf.format(current));
-		}
-		else {
-			System.out.println("Insufficient Funds");
-		}
+	public String getCpf() {
+		return cpf;
 	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
+	
+	public String getCnpj() {
+		return cnpj;
+	}
+
+	public void setCnpj(String cnpj) {
+		this.cnpj = cnpj;
+	}
+
+	public abstract void balance();
+
+	public abstract void deposit(double value);
+
+	public abstract void toWithdrawa(double value);
 
 	@Override
 	public String toString() {
-		return "Number Account: " 
-				+ numberAccount	
-				+ ","
-				+ people 
-				+ ","
-				+ " Balance R$: " + String.format("%.2f ", getBalance());
+		return "\nName: " + name + "\nTelefone " + telefone;
+
 	}
+
 	
 
 	
+
 }

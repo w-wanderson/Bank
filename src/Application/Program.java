@@ -1,25 +1,23 @@
 package Application;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import java.util.ArrayList;
-import java.util.List;
-
+import java.util.Date;
 import java.util.InputMismatchException;
-
+import java.util.List;
 import java.util.Locale;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import Entities.Account;
-import Entities.People;
+import Entities.AccountBusiness;
+import Entities.AccountCurrent;
 
 public class Program {
 
 	static Scanner sc = new Scanner(System.in);
-	static List<Account> accountsBanks = new ArrayList<>();
+
+	static List<AccountCurrent> listAccountCurrent = new ArrayList<>();
+	static List<AccountBusiness> listAccountBusiness = new ArrayList<>();
 
 	static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyy HH:mm:ss");
 	static Date current = new Date();
@@ -28,7 +26,8 @@ public class Program {
 
 		Locale.setDefault(Locale.US);
 
-		accountsBanks = new ArrayList<Account>();
+		listAccountCurrent = new ArrayList<AccountCurrent>();
+		listAccountBusiness = new ArrayList<AccountBusiness>();
 
 		operations();
 	}
@@ -59,7 +58,7 @@ public class Program {
 				break;
 
 			case 3:
-				toWhitdraw();
+				towithdrawal();
 				break;
 
 			case 4:
@@ -71,7 +70,8 @@ public class Program {
 				break;
 
 			case 6:
-				listAccounts();
+				listAccountsCurrent();
+				listAccountsBusiness();
 				break;
 
 			case 7:
@@ -95,129 +95,347 @@ public class Program {
 
 	public static void createAccount() {
 
-		System.out.println("Name:");
-		String name = sc.next();
-
-		System.out.println("CPF: ");
-		String cpf = sc.next();
-
-		People people = new People(name, cpf);
-
-		Account acc = new Account(people);
-
-		accountsBanks.add(acc);
-		System.out.println("Account Created Successfully.");
+		System.out.println("What Yype Of Account Do You Want To Create?");
 		System.out.println();
+		System.out.println("Choose 1 For Current Or 2 For Business");
+		int option = sc.nextInt();
+
+		try {
+
+			switch (option) {
+			case 1:
+
+				System.out.println("Name:");
+				String name = sc.next();
+
+				System.out.println("CPF: ");
+				String cpf = sc.next();
+
+				System.out.println("tel: ");
+				String tel = sc.next();
+
+				AccountCurrent accountCurrent = new AccountCurrent(name, tel, cpf);
+
+				listAccountCurrent.add(new AccountCurrent(accountCurrent));
+				System.out.println("Account Created Successfully.");
+				System.out.println();
+
+				break;
+
+			case 2:
+				System.out.println("Fantasy Name:");
+				String name_ = sc.next();
+
+				System.out.println("CNPJ: ");
+				String cnpj = sc.next();
+
+				System.out.println("Phone: ");
+				String phone_ = sc.next();
+
+				AccountBusiness accountBusiness = new AccountBusiness(name_, phone_, cnpj);
+
+				listAccountBusiness.add(new AccountBusiness(accountBusiness));
+				System.out.println("Account Created Successfully.");
+				System.out.println();
+				break;
+
+			default:
+				System.out.println("Invalid Option");
+				break;
+			}
+		} catch (InputMismatchException e) {
+			System.out.println("Entry Not Allowed.");
+		}
 
 		operations();
 
 	}
 
-	public static Account findAccount(int accountNumber) {
-		Account acc = null;
-		if (accountsBanks.size() > 0) {
-			for (Account ac : accountsBanks) {
+	public static AccountCurrent findAccount(int accountNumber) {
+		AccountCurrent accountCurrent = null;
+		if (listAccountCurrent.size() > 0) {
+			for (AccountCurrent ac : listAccountCurrent) {
 				if (ac.getNumberAccount() == accountNumber)
-					acc = ac;
+					accountCurrent = ac;
 			}
 
 		}
-		return acc;
+		return accountCurrent;
+	}
+
+	public static AccountBusiness findAccountBusiness(int accountNumber) {
+		AccountBusiness accountBusiness = null;
+		if (listAccountBusiness.size() > 0) {
+			for (AccountBusiness ac1 : listAccountBusiness) {
+				if (ac1.getNumberAccountBusiness() == accountNumber)
+					accountBusiness = ac1;
+			}
+
+		}
+		return accountBusiness;
 	}
 
 	public static void deposit() {
-		System.out.println("Account Number For Deposit:");
-		int accountNum = sc.nextInt();
 
-		Account acc = findAccount(accountNum);
+		System.out.println("type of deposit account: 1 - for Current or 2 - for Business");
+		int typeAccount = sc.nextInt();
 
-		if (acc != null) {
-			System.out.println("What Is The deposit Amount: ");
-			double amount = sc.nextDouble();
+		switch (typeAccount) {
+		case 1:
 
-			acc.deposit(amount);
+			System.out.println("Account Number For Deposit:");
+			int accountNumberCurrent = sc.nextInt();
 
-		} 
-		else {
-			System.out.println("Account Not Found");
+			AccountCurrent accountCurrent = findAccount(accountNumberCurrent);
+
+			if (accountCurrent != null) {
+				System.out.println("What Is The deposit Amount: ");
+				double amount = sc.nextDouble();
+
+				accountCurrent.deposit(amount);
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			System.out.println();
+
+			operations();
+
+			break;
+		case 2:
+
+			System.out.println("Account Number For Deposit:");
+			int accountNumberBusiness = sc.nextInt();
+
+			AccountBusiness accountBusiness = findAccountBusiness(accountNumberBusiness);
+			if (accountBusiness != null) {
+				System.out.println("What Is The deposit Amount: ");
+				double amount = sc.nextDouble();
+
+				accountBusiness.deposit(amount);
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			System.out.println();
+
+			operations();
+			break;
+
+		default:
+			System.out.println("Invalid Option");
+			break;
+
 		}
-		
-		System.out.println();
+
 		operations();
 
 	}
 
-	public static void toWhitdraw() {
-		System.out.println("Account Number: ");
-		int accountNum = sc.nextInt();
+	public static void towithdrawal() {
 
-		Account acc = findAccount(accountNum);
+		System.out.println("account type for withdrawal: 1 - for Current or 2 - for Business");
+		int typeAccount = sc.nextInt();
 
-		if (acc != null) {
-			System.out.println("Withdrawal Amount: ");
-			double amount = sc.nextDouble();
+		switch (typeAccount) {
+		case 1:
+			System.out.println("Account Number For withdrawal:");
+			int accountNumberCurrent = sc.nextInt();
 
-			acc.toWithdrawa(amount);
+			AccountCurrent accountCurrent = findAccount(accountNumberCurrent);
 
-		} 
-		else {
-			System.out.println("Account Not Found");
+			if (accountCurrent != null) {
+				System.out.println("Withdrawal Amount: ");
+				double amount = sc.nextDouble();
+
+				accountCurrent.toWithdrawa(amount);
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			operations();
+
+			break;
+		case 2:
+
+			System.out.println("Account Number For withdrawal:");
+			int accountNumberBusiness = sc.nextInt();
+
+			AccountBusiness accountBusiness = findAccountBusiness(accountNumberBusiness);
+			if (accountBusiness != null) {
+				System.out.println("What Is The withdrawal Amount: ");
+				double amount = sc.nextDouble();
+
+				accountBusiness.toWithdrawa(amount);
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			System.out.println();
+
+			operations();
+
+			break;
+
+		default:
+			System.out.println("Invalid Option");
+			break;
 		}
+
 		operations();
 	}
 
 	public static void balance() {
 
-		System.out.println("Account Number: ");
-		int accountNum = sc.nextInt();
-		Account acc = findAccount(accountNum);
+		System.out.println("Balance: 1 - for Current or 2 - for Business");
+		int typeAccount = sc.nextInt();
 
-		acc.balance();
-		System.out.println(acc + " | " + sdf.format(current));
+		switch (typeAccount) {
+		case 1:
+			System.out.println("Account Number For Balance:");
+			int accountNumberCurrent = sc.nextInt();
+
+			AccountCurrent accountCurrent = findAccount(accountNumberCurrent);
+			if (accountCurrent != null) {
+
+				accountCurrent.getBalance();
+
+				System.out.println(accountCurrent + " | " + sdf.format(current));
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			System.out.println();
+
+			operations();
+
+			break;
+
+		case 2:
+
+			System.out.println("Account Number For Balance:");
+			int accountNumberBusiness = sc.nextInt();
+
+			AccountBusiness accountBusiness = findAccountBusiness(accountNumberBusiness);
+			if (accountBusiness != null) {
+
+				accountBusiness.getBalance();
+
+				System.out.println(accountBusiness + " | " + sdf.format(current));
+
+			} else {
+				System.out.println("Account Not Found");
+			}
+
+			System.out.println();
+
+			operations();
+
+			break;
+		default:
+			System.out.println("Invalid Option");
+			break;
+		}
 
 		operations();
 	}
 
 	public static void transfer() {
-		System.out.println("Sender Account Number: ");
-		int accountNumSen = sc.nextInt();
 
-		Account accountSender = findAccount(accountNumSen);
+		System.out.println("select origin account: 1 para current or 2 for business:");
+		int option = sc.nextInt();
 
-		if (accountSender != null) {
-			System.out.println("Destiny account number: ");
-			int destinyAccount = sc.nextInt();
+		switch (option) {
+		case 1:
+			System.out.println("Origin Account: ");
+			int OriginAccountCurret = sc.nextInt();
 
-			Account destiny = findAccount(destinyAccount);
+			AccountCurrent accountCurrent = findAccount(OriginAccountCurret);
 
-			if (destiny != null) {
-				System.out.println("Transfer Value: ");
-				double value = sc.nextDouble();
+			if (accountCurrent != null) {
+				System.out.println("Destiny account: ");
+				int destinyAccount = sc.nextInt();
 
-				accountSender.transfer(destiny, value);
+				AccountCurrent originCurrent = findAccount(OriginAccountCurret);
+				AccountBusiness destinyBusiness = findAccountBusiness(destinyAccount);
+				if (destinyBusiness != null || originCurrent != null) {
+					System.out.println("Transfer Value: ");
+					double value = sc.nextDouble();
 
-			} 
-			else {
-				System.out.println("Deposit Account Not Found.");
+					originCurrent.transfer(originCurrent, destinyBusiness, value);
+
+				} else {
+					System.out.println("Deposit Account Not Found.");
+				}
+			} else {
+				System.out.println("Account For Transfer not Found.");
 			}
-		} 
-		else {
-			System.out.println("Account For Transfer not Found.");
+
+			operations();
+			break;
+
+		case 2:
+
+			System.out.println("Origin account: ");
+			int OriginAccountBusiness = sc.nextInt();
+
+			AccountBusiness accountBusiness = findAccountBusiness(OriginAccountBusiness);
+
+			if (accountBusiness != null) {
+				System.out.println("Destiny account number: ");
+				int destinyAccount = sc.nextInt();
+
+				AccountBusiness OriginBusiness = findAccountBusiness(OriginAccountBusiness);
+				AccountCurrent destinyCurrent = findAccount(destinyAccount);
+
+				if (OriginBusiness != null || destinyCurrent != null) {
+					System.out.println("Transfer Value: ");
+					double value = sc.nextDouble();
+
+					OriginBusiness.transfer(OriginBusiness, destinyCurrent, value);
+
+				} else {
+					System.out.println("Deposit Account Not Found.");
+				}
+			} else {
+				System.out.println("Account For Transfer not Found.");
+			}
+
+			operations();
+			break;
+		default:
+			System.out.println("Invalid Option");
+			break;
+		}
+
+	}
+
+	public static void listAccountsCurrent() {
+		if (listAccountCurrent.size() > 0) {
+			for (AccountCurrent acc1 : listAccountCurrent) {
+				System.out.println(acc1);
+			}
+		} else {
+			System.out.println("No Registered Accounts Current ");
+		}
+
+	}
+
+	public static void listAccountsBusiness() {
+		if (listAccountBusiness.size() > 0) {
+			for (AccountBusiness acc1 : listAccountBusiness) {
+				System.out.println(acc1);
+			}
+		} else {
+			System.out.println("No Registered Accounts Business ");
 		}
 
 		operations();
-	}
 
-	public static void listAccounts() {
-		if (accountsBanks.size() > 0) {
-			for (Account acc : accountsBanks) {
-				System.out.println(acc);
-			}
-		} 
-		else {
-			System.out.println("No Registered Accounts ");
-		}
-		operations();
 	}
-
 }
